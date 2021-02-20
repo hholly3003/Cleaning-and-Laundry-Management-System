@@ -20,19 +20,19 @@ jobs:
       - name: Run Tests
         run: |
           python -m unittest discover -s src/tests/ -v
-  deployment:
-    needs: test_suite
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fresh clone & repo install
-        uses: appleboy/ssh-action@master
-        with:
-          host: 34.228.96.189
-          username: github-actions
-          key: ${{ secrets.SHH_KEY }}
-          port: 22
-          script: |
-            rm -rf Cleaning-and-Laundry-Management-System
-            git clone https://github.com/hholly3003/Cleaning-and-Laundry-Management-System.git
-            python3.8 -m venv /home/github-actions/Cleaning-and-Laundry-Management-System/venv
-            /home/github-actions/Cleaning-and-Laundry-Management-System/venv/bin/pip3.8 install -r /home/github-actions/Cleaning-and-Laundry-Management-System/requirements.txt
+  # deployment:
+  #   needs: test_suite
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Fresh clone & repo install
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: 34.228.96.189
+  #         username: github-actions
+  #         key: ${{ secrets.SHH_KEY }}
+  #         port: 22
+  #         script: |
+  #           rm -rf Cleaning-and-Laundry-Management-System
+  #           git clone https://github.com/hholly3003/Cleaning-and-Laundry-Management-System.git
+  #           python3.8 -m venv /home/github-actions/Cleaning-and-Laundry-Management-System/venv
+  #           /home/github-actions/Cleaning-and-Laundry-Management-System/venv/bin/pip3.8 install -r /home/github-actions/Cleaning-and-Laundry-Management-System/requirements.txt
