@@ -1,11 +1,20 @@
-# T4A2 - A - Full Stack Application - Part A
-
+# Cleaning and Laundry Management
 ---
-
-### Description of your website, including:
-
-- ### Purpose : 
-
+### Help and Installation Guide
+---
+**System Requirement**: Please ensure that Python3 is installed on your machine
+#### Project and Environment Setup
+- Clone the repository to your local machine
+- Create virtual environment and activate
+- Install all dependencies
+- Run the application
+#### Database Setup
+- Install PostgreSQL on your host
+- Log into PostgreSQL as postgres user
+- Create database for the management system
+- Set up .env folder
+---
+### About the Project
   The purpose of the **Cleaning and Laundry Management System** website is to accept a laundry order from the customer and manage the order, such as organising the schedule delivery, sending confirmation of order, and accepting payments. The benefits are getting all customer order recorded automatically, well organised, and never miss out or lost any order.
 
   In today's condition of COVID-19 pandemic where we need to keep distance to each other to minimalise contact, all business is required to use Internet technology to reach out to their customer. This includes businesses who provide services of cleaning and laundry. At the moment, people acquire their services via call, submit an enquire via their static website and need to wait for the admin to send a reply. Then, the admin recorded the job order manually. The process is semi-manual and often the admin forget to reply to the customer enquiry or miss the call. This has resulted bad experience for the potential customer and it is consider as lost from business aspect.
@@ -27,12 +36,9 @@
   3. Details of each job. Show the customer details, when, and where the jobs take place.
   4. Updating the status of the job order.
   5. Check on the jobs history and client details
-
-  
+---
 
 ### Functionality / Features
-
-Update this, based on MVP, additional features
 
 **Features for Minimum Viable Products**
 
@@ -72,118 +78,5 @@ The website is best suited for the cleaning and laundry business who wants to gr
 **Cloud Application Deployment** : AWS (EC2)
 
 
-
-## Data Flow Diagram
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Data Flow Diagram - Laundry and Management System.jpeg)
-
-## Application Architecture Diagram
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Application Architecture Diagram.png)
-
-## User Stories
-
-#### Initial Idea
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/User Story_1.png)
-
-#### Refinement Idea
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/User Story_2.png)
-
-#### Revised for MVP
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/User Story_3.png)
-
-#### Administrator Persona
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Administrator Persona.png)
-
-#### Customer Persona
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Customer Persona.png)
-
-## Wireframes - Desktop Screen Size
-
-#### Administrator View
-
-- Landing Page / Login Page
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/administrator_landing_page.png)
-
-- Home Page / Today's jobs page
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/administrator_home_page.png)
-
-- Future Jobs page
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/administrator_future_jobs.png)
-
-- Past Jobs Page
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/administrator_past_jobs.png)
-
-- Job Details Page (on Scheduled)
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/administrator_job_details_schedule.png)
-
-- Job Details Page (on Completed)
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/administrator_job_details_completed.png)
-
-- Job Details Page (on Cancelled)
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/administrator_job_details_cancelled.png)
-
-#### Customer View
-
-- Landing Page / Login Page
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/customer_landing_page.png)
-
-- Home Page
-
-  ![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/customer_home_page.png)
-
-## Trello
-
-#### 14 February 2021 - 8 PM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_1.png)
-
-#### 15 February 2021 - 10 AM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_2.png)
-
-#### 15 February 2021 - 8:05 PM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_3.png)
-
-#### 16 February 2021 - 1:25 AM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_4.png)
-
-#### 16 February 2021 - 12:18 PM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_5.png)
-
-#### 17 February 2021 - 3:50 PM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_6.png)
-
-#### 18 February 2021 - 1:15 AM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_7.png)
-
-#### 18 February 2021 - 3:45 PM
-
-![](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_8.png)
-
-#### 19 February 2021 - 1:00 PM
-
-![Trello_9](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_9.png)
-
-#### 19 February 2021 - 3:00 PM
-
-![Trello_10](/Users/hollyholly/Desktop/Holly_T4A2-A/docs/Trello_10.png)
-
+### Project Documents
+For better understanding about this system, User stories, Data flow and Application architecture diagrams are provided. Please check [HERE](https://github.com/hholly3003/Cleaning-and-Laundry-Management-System/wiki/Documents).
