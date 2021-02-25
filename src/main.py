@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 from marshmallow.exceptions import ValidationError
 #Load environment variable
 from dotenv import load_dotenv
@@ -11,6 +12,7 @@ load_dotenv()
 db = SQLAlchemy()
 ma = Marshmallow()
 bcrypt = Bcrypt()
+jwt = JWTManager()
 
 def create_app():
     #Flask app creation
@@ -22,6 +24,7 @@ def create_app():
     db.init_app(app)
     ma.init_app(app)
     bcrypt.init_app(app)
+    jwt.init_app(app)
 
     #Register the commands blueprint into flask app
     from commands import db_commands

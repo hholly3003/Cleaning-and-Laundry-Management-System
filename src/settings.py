@@ -11,6 +11,7 @@ def get_env(var):
 #Defining configuration for different environments
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_SECRET_KEY = "duck"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
@@ -20,7 +21,9 @@ class DevelopmentConfig(Config):
     DEBUG = True
 
 class ProductionConfig(Config):
-    pass
+    @property
+    def JWT_SECRET_KEY(self):
+        return get_env("JWT_SECRET_KEY")
 
 class TestingConfig(Config):
     TESTING = True
