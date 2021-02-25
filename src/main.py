@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from flask_login import LoginManager
 from marshmallow.exceptions import ValidationError
 #Load environment variable
 from dotenv import load_dotenv
@@ -13,6 +14,7 @@ db = SQLAlchemy()
 ma = Marshmallow()
 bcrypt = Bcrypt()
 jwt = JWTManager()
+login_manager = LoginManager()
 
 def create_app():
     #Flask app creation
@@ -25,6 +27,7 @@ def create_app():
     ma.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
+    login_manager.init_app(app)
 
     #Register the commands blueprint into flask app
     from commands import db_commands

@@ -12,6 +12,7 @@ def get_env(var):
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = "duck"
+    SECRET_KEY = "Authkey"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
