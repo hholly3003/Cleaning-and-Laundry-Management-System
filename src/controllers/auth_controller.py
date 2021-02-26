@@ -106,3 +106,9 @@ def login_view():
         flash("Invalid email and password.")
         return redirect(url_for("auth.login-view"))
     return render_template("login.html", form=form)
+
+@auth.route("/logout", methods=["GET","POST"])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("auth.login_view"))

@@ -1,5 +1,6 @@
 from main import ma
 from models.Profile import Profile
+from schemas.UserSchema import UserSchema
 from marshmallow.validate import Length
 
 class ProfileSchema(ma.SQLAlchemyAutoSchema):
