@@ -50,8 +50,8 @@ def profile_create():
 
 #ADMIN AND RELATED USER ONLY
 @profiles.route("/<int:id>", methods=["GET"])
-@jwt_required
-def dashboard(id):
+@jwt_required()
+def profile(id):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
 
@@ -62,47 +62,48 @@ def dashboard(id):
 
     if profile.count() != 1:
         return abort(404, description="Profile not found")
+    return jsonify(profile_schema.dump(profile[0]))
 
-# #RELATED USER ONLY
-# @profiles.route("/<int:id>", methods=["PUT","PATCH"])
-# @jwt_required
-# def profile_update(id):
-#     user_id =get_jwt_identity()
-#     user = User.query.get(user_id)
+#RELATED USER ONLY
+@profiles.route("/<int:id>", methods=["PUT","PATCH"])
+@jwt_required()
+def profile_update(id):
+    user_id =get_jwt_identity()
+    user = User.query.get(user_id)
 
-#     if not user:
-#         return abort(401, description="Invalid User")
+    if not user:
+        return abort(401, description="Invalid User")
     
-#     profile_fields = profile_schema.load(request.json)
-#     profile = Profile.query.filter_by(id=id, user_id=user.id)
+    profile_fields = profile_schema.load(request.json)
+    profile = Profile.query.filter_by(id=id, user_id=user.id)
 
-#     if not profile:
-#         return abort(401, description="Unauthorised to update this profile")
+    if not profile:
+        return abort(401, description="Unauthorised to update this profile")
     
-#     profile.update(profile_fields)
-#     db.session.commit()
+    profile.update(profile_fields)
+    db.session.commit()
 
-#     return jsonify(profile_schema.dump(profile[0]))
+    return jsonify(profile_schema.dump(profile[0]))
 
-# #RELATED USER ONLY
-# @profiles.route("/<int:id>", methods=["DELETE"])
-# @jwt_required
-# def profile_delete(id):
-#     user_id = get_jwt_identity()
-#     user = User.query.get(user_id)
+#RELATED USER ONLY
+@profiles.route("/<int:id>", methods=["DELETE"])
+@jwt_required()
+def profile_delete(id):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
 
-#     if not user:
-#         return abort(401, description="Invalid user")
+    if not user:
+        return abort(401, description="Invalid user")
     
-#     profile = Profile.query.filter_by(id=id, user_id=user.id).first()
+    profile = Profile.query.filter_by(id=id, user_id=user.id).first()
 
-#     if not profile:
-#         return abort(401, description="Unathorised to delete this profile")
+    if not profile:
+        return abort(401, description="Unathorised to delete this profile")
     
-#     db.session.deletr(profile)
-#     db.session.commit()
+    db.session.delete(profile)
+    db.session.commit()
 
-#     return jsonify(profile_schema.dump(profile))
+    return jsonify(profile_schema.dump(profile))
 
 @profiles.route("/create-view", methods=["GET","POST"])
 @login_required
@@ -113,18 +114,19 @@ def create_view():
         if profile:
             flash("You already have a profile")
             return redirect(url_for("profiles.profile_view", id=profile.id))
-        profile = Profile()
-        profile.username = current_user.email
-        profile.firstname = form.firstname.data
-        profile.lastname = form.lastname.data
-        profile.user_id = current_user.id
+        else:
+            profile = Profile()
+            profile.username = current_user.email
+            profile.firstname = form.firstname.data
+            profile.lastname = form.lastname.data
+            profile.user_id = current_user.id
 
-        db.session.add(profile)
-        db.session.commit()
+            db.session.add(profile)
+            db.session.commit()
 
-        flash("Profile Created")
-        return redirect(url_for("profiles.profile_view", id=profile.id))
-    flash("Failed to create your profile.")
+            flash("Profile Created")
+            return redirect(url_for("profiles.profile_view", id=profile.id))
+        flash("Failed to create your profile.")
     return render_template("create_profile.html", form=form)
 
 @profiles.route("/profile-view/<int:id>", methods=["GET"])
