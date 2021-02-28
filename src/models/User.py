@@ -1,6 +1,7 @@
 from main import db, bcrypt
 from sqlalchemy.orm import backref
 from flask_login import UserMixin
+from models.Profile import Profile
 
 class User(UserMixin,db.Model):
     __tablename__ = "users"
