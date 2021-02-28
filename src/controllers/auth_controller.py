@@ -83,7 +83,7 @@ def register_view():
         db.session.commit()
 
         login_user(user)
-        return redirect(url_for("profile.dashboard"))
+        return redirect(url_for("profiles.create_view"))
     return render_template("register.html", form=form)   
 
 @auth.route("/login-view", methods=["GET", "POST"])
@@ -97,17 +97,17 @@ def login_view():
 
     #Bypass if user is logged in
     if current_user.is_authenticated:
-        return redirect(url_for("profile.dashboard"))
+        return redirect(url_for("profiles.profile_view",id=current_user.id))
     
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        
+
         #Check if the password matched
         if user and user.check_password(form.password.data):
             login_user(user)
             next_page = request.args.get("next")
-            return redirect(next_page or url_for("profile.dashboard"))
+            return redirect(next_page or url_for(f"profiles.profile_view", current_user.id))
         flash("Invalid email and password.")
         return redirect(url_for("auth.login_view"))
     return render_template("login.html", form=form)

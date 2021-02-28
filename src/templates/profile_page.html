@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{profile.firstname}}'s Profile</h5>
+                <div class="text-secondary">Full Name : {{profile.firstname}} {{profile.lastname}}</div>
+                <div class="text-secondary">Email : {{profile.username}} </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

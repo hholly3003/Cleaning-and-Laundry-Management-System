@@ -46,3 +46,21 @@ class LoginForm(FlaskForm):
         "Password",
         validators=[DataRequired()])
     submit = SubmitField("Login")
+
+class ProfileForm(FlaskForm):
+    """ Create Profile Form """
+    username = StringField("username")
+    firstname = StringField(
+        "First name",
+        validators=[
+            DataRequired(),
+            Length(min=1)   
+        ]
+    )
+    lastname = StringField(
+        "Last name",
+        validators=[
+            DataRequired(),
+            Length(min=1)   
+        ]
+    )
