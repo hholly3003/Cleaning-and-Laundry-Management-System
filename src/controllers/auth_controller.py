@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, jsonify, request, abort, redirect,url_for, flash, render_template
 from flask_jwt_extended import create_access_token
 from flask_login import current_user, login_user, logout_user, login_required
-from schemas.UserSchema import user_schema
+from schemas.UserSchema import user_schema, users_schema
 from models.User import User
 from main import db, login_manager
 from forms import LoginForm, RegisterForm
@@ -39,6 +39,11 @@ def login():
         return jsonify({"token": access_token})
     else:
         return abort(401, description="Unauthorized")
+
+@auth.route("/users", methods=["GET"])
+def user_index():
+    user = User.query.all()
+    return jsonify(users_schema.dump(user))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -97,14 +102,14 @@ def login_view():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-
+        
         #Check if the password matched
-        if user and user.check_password(form.user.data):
+        if user and user.check_password(form.password.data):
             login_user(user)
             next_page = request.args.get("next")
             return redirect(next_page or url_for("profile.dashboard"))
         flash("Invalid email and password.")
-        return redirect(url_for("auth.login-view"))
+        return redirect(url_for("auth.login_view"))
     return render_template("login.html", form=form)
 
 @auth.route("/logout", methods=["GET","POST"])
