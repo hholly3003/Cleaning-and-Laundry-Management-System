@@ -41,7 +41,6 @@ def profile_create():
     new_profile.username = profile_fields["username"]
     new_profile.firstname = profile_fields["firstname"]
     new_profile.lastname = profile_fields["lastname"]
-    new_profile.user_id = user.id
 
     user.profile.append(new_profile)
     db.session.commit()
@@ -58,10 +57,13 @@ def profile(id):
     if not user:
         return abort(401, description="Invalid user")
     
+    if user.profile == []:
+        return abort(400, description="Profile not found")
+    
     profile = Profile.query.filter_by(id=id, user_id=user.id)
 
     if profile.count() != 1:
-        return abort(404, description="Profile not found")
+        return abort(401, description="Unauthorised to access this profile")
     return jsonify(profile_schema.dump(profile[0]))
 
 #RELATED USER ONLY
@@ -119,9 +121,8 @@ def create_view():
             profile.username = current_user.email
             profile.firstname = form.firstname.data
             profile.lastname = form.lastname.data
-            profile.user_id = current_user.id
 
-            db.session.add(profile)
+            user.profile.append(profile)
             db.session.commit()
 
             flash("Profile Created")
@@ -137,11 +138,16 @@ def profile_view(id):
 
     if not user:
         flash("Invalid user")
-        return redirect(url_for("auth.register_view"))
+        return redirect(url_for("auth.login_view"))
+    
+    if user.profile == []:
+        flash("Profile page can not be found")
+        return redirect(url_for("profiles.create_view"))    
     
     profile = Profile.query.filter_by(id=id, user_id=user.id).first()
 
     if not profile:
-        flash("Profile page can not be found")
-        return redirect(url_for("profiles.create_view"))
+        flash("Unauthorised to access the requested profile")
+        return redirect(url_for("profiles.profile_view", id=user.id))
+
     return render_template("profile_page.html", profile=profile)

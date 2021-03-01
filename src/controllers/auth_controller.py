@@ -107,7 +107,7 @@ def login_view():
         if user and user.check_password(form.password.data):
             login_user(user)
             next_page = request.args.get("next")
-            return redirect(next_page or url_for(f"profiles.profile_view", current_user.id))
+            return redirect(next_page or url_for(f"profiles.profile_view", id=current_user.id))
         flash("Invalid email and password.")
         return redirect(url_for("auth.login_view"))
     return render_template("login.html", form=form)
