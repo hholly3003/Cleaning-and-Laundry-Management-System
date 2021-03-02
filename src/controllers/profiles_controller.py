@@ -14,7 +14,6 @@ profiles = Blueprint("profiles", __name__, url_prefix="/profiles")
 @profiles.route("/", methods=["GET"])
 @jwt_required()
 def profile_index():
-    profiles = Profile.query.all()
     profiles = Profile.query.options(joinedload("user")).all()
     return jsonify(profiles_schema.dump(profiles))
 
@@ -32,8 +31,8 @@ def profile_create():
         return abort(400, description="User already has a profile in the system")
     
     profile_fields = profile_schema.load(request.json)
-    profile = Profile.query.filter_by(username=profile_fields["username"]).first()
 
+    profile = Profile.query.filter_by(username=profile_fields["username"]).first()
     if profile:
         return abort(400, description="username is taken")
     
@@ -112,6 +111,7 @@ def profile_delete(id):
 def create_view():
     form = ProfileForm()
     if form.validate_on_submit():
+        user = User.query.get(current_user.id)
         profile = Profile.query.get(current_user.id)
         if profile:
             flash("You already have a profile")

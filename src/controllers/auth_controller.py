@@ -40,6 +40,7 @@ def login():
     else:
         return abort(401, description="Unauthorized")
 
+# ADMIN ONLY
 @auth.route("/users", methods=["GET"])
 def user_index():
     user = User.query.all()
