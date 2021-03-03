@@ -11,7 +11,7 @@ class Job(db.Model):
     job_requested = db.Column(db.String(), nullable=False)
     job_created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     job_date = db.Column(db.Date, nullable=False, default=date.today())
-    # job_time = db.Column(db.Time, default=datetime.now().time())
+    job_time = db.Column(db.Time, default=datetime.now().time())
     job_address = db.Column(db.String(100), nullable=False)
     job_status = db.Column(db.String(), nullable=False, default="Pending")
     job_notes = db.Column(db.String(120))
