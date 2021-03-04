@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="col px-md-5"><div class="p-3 border bg-light">
+        <div class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    Customer Details
+                </div>
+                <div class="card-body">
+                    <div class="text-secondary">Customer Number : {{job.cust_name}}</div>
+                    <div class="text-secondary">Contact Number : {{job.contact_num}} </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    Job Description
+                </div>
+                <div class="card-body">
+                    <div class="text-secondary">{{job.job_requested}}</div>
+                    <div class="text-secondary">Date : {{job.job_date}}</div>
+                    <div class="text-secondary">Time : {{job.job_time}}</div>
+                    <div class="text-secondary">Address : {{job.job_address}}</div>
+                    <div class="text-secondary">Notes : {{job.notes}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -11,6 +11,8 @@ def create_db():
 @db_commands.cli.command("drop")
 def drop_db():
     db.drop_all()
+    #Delete the alembic table
+    db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
     print("Tables deleted")
 
 @db_commands.cli.command("seed")
@@ -60,7 +62,7 @@ def seed_db():
     
     db.session.commit()
 
-    for i in range(10):
+    for i in range(4):
         job = Job()
         job_type = random.choice(job_types)
         job.cust_name = faker.name()

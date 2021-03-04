@@ -1,0 +1,17 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+    {% for job in jobs %}
+    <div class="card mb-3">
+        <div class="card-header">
+          {{job.job_date.strftime("%d %b %Y")}}, {{job.job_time.strftime("%H:%M")}} {{job.job_status}}
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{job.cust_name}}</h5>
+          <p class="card-text">Job Type : {{job.job_requested}}</p>
+          <a href="{{url_for('jobs.job_view',id=job.id)}}" class="nav-link justify-content-end">Job Details</a>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
