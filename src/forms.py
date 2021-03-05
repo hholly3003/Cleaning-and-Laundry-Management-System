@@ -78,6 +78,9 @@ class ProfileForm(FlaskForm):
 #     number = StringField("Number")
 
 class AddressForm(FlaskForm):
+    class Meta:
+        csrf = False
+        
     street_name = StringField(
         "Street Name",
         validators=[

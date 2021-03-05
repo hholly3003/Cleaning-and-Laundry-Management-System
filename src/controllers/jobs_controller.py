@@ -131,26 +131,35 @@ def index_view():
 @login_required
 def create_view():
     form = JobForm()
+    # print(form)
+    # if form.validate_on_submit():
+    # print(form.cust_name.data)
+    # print(form.contact_num.data)
+    # print(form.job_requested.data)
+    # print(form.job_date.data)
+    # print(form.job_time.data)
+    # print(form.job_address.data)
+    # print(form.notes.data)
+    
     if form.validate_on_submit():
-        flash("Testing")
+        flash("Creating....")
         profile = Profile.query.get(current_user.id)
-        job_type = JobType.query.filter_by(name=form.job_requested.data).first()
+        job_type = JobType.query.filter_by(id=form.job_requested.data).first()
 
         job = Job()
         job.cust_name = form.cust_name.data
+        print(form.cust_name.data)
         job.contact_num = form.contact_num.data
-        job.job_requested = form.job_requested.data
+        job.job_requested = job_type.name
         job.job_date = form.job_date.data
-        print("*****************")
         job.job_time = form.job_time.data
         job.job_address = form.job_address.data
         job.job_notes = form.notes.data
         job.job_status = "Pending"
         profile.jobs.append(job)
         job_type.jobs.append(job)
-        
-        db.session.commit()
         print(job)
+        db.session.commit()
 
         flash("Your request is received!")
         return redirect(url_for("profiles.profile_view", id=profile.id))
@@ -175,21 +184,21 @@ def job_view(id):
 
     return render_template("job_page.html", job=job)
 
-@jobs.route("/job-view/<int:id>", methods=["GET"])
-@login_required
-def delete_view(id):
-    user_id = current_user.id
-    user = User.query.get(user_id)
+# @jobs.route("/job-view/<int:id>", methods=["GET"])
+# @login_required
+# def delete_view(id):
+#     user_id = current_user.id
+#     user = User.query.get(user_id)
 
-    if not user:
-        flash("Invalid user")
-        return redirect(url_for("auth.login_view"))   
+#     if not user:
+#         flash("Invalid user")
+#         return redirect(url_for("auth.login_view"))   
     
-    profile = Profile.query.filter_by(user_id=user.id).first()
-    job = Job.query.filter_by(id=id, profile_id=profile.id).first()
+#     profile = Profile.query.filter_by(user_id=user.id).first()
+#     job = Job.query.filter_by(id=id, profile_id=profile.id).first()
 
-    if not job:
-        flash("Unauthorised to access the job information")
-        return redirect(url_for("jobs.index_view"))
+#     if not job:
+#         flash("Unauthorised to access the job information")
+#         return redirect(url_for("jobs.index_view"))
 
-    return render_template("job_page.html", job=job)
+#     return render_template("job_page.html", job=job)
