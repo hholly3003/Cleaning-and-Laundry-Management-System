@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 
 {% block content %}
+    <h1 style= "text-align: center;">Job {{job.id}}</h1>
     <div class="col px-md-5"><div class="p-3 border bg-light">
         <div class="content-section">
+            <p class="card-text">Requested by: {{job.profiles.firstname}} {{job.profiles.lastname}}</p>
             <div class="card">
                 <div class="card-header">
                     Customer Details
@@ -18,13 +20,17 @@
                 </div>
                 <div class="card-body">
                     <div class="text-secondary">{{job.job_requested}}</div>
-                    <div class="text-secondary">Date : {{job.job_date}}</div>
-                    <div class="text-secondary">Time : {{job.job_time}}</div>
+                    <div class="text-secondary">Date : {{job.job_date.strftime("%d %b %Y")}}</div>
+                    <div class="text-secondary">Time : {{job.job_time.strftime("%H:%M")}}</div>
                     <div class="text-secondary">Address : {{job.job_address}}</div>
                     <div class="text-secondary">Notes : {{job.notes}}</div>
                 </div>
-                <p class="card-text">Created by: {{job.profiles.firstname}}</p>
             </div>
+            <div class="">
+                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('jobs.update_view', id=job.id)}}">Update</a>
+                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{{url_for('jobs.delete_view', id=job.id)}}">Delete</a>
+            </div>
+            
         </div>
     </div>
 {% endblock %}

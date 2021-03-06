@@ -44,7 +44,7 @@ def job_create():
     new_job.contact_num = job_fields["contact_num"]
     new_job.job_requested = job_fields["job_requested"]
     new_job.job_date = job_fields["job_date"]
-    # new_job.job_time = job_fields["job_time"]
+    new_job.job_time = job_fields["job_time"]
     new_job.job_address = job_fields["job_address"]
     new_job.job_status = job_fields["job_status"]
     new_job.job_notes = job_fields["job_notes"]
@@ -89,6 +89,7 @@ def job_update(id):
     profile = Profile.query.filter_by(user_id=user.id).first()
     
     job_fields = job_schema.load(request.json)
+    print(job_fields)
 
     job = Job.query.filter_by(id=id, profile_id=profile.id)
     if job.count() != 1:
@@ -124,7 +125,14 @@ def job_delete(id):
 @jobs.route("/job-view", methods=["GET","POST"])
 @login_required
 def index_view():
+    # user_id = current_user.id
+    # user = User.query.get(id)
+
+    # profile = Profile.query.filter_by(user_id=user.id).first()
+
     jobs = Job.query.options(joinedload("profiles")).all()
+
+    # profile_jobs = Job.query.filter_by(profile_id=profile.id).first()
     return render_template("index_job.html", jobs=jobs)
 
 @jobs.route("/create-view", methods=["GET","POST"])
@@ -133,7 +141,6 @@ def create_view():
     form = JobForm()
     
     if form.validate_on_submit():
-        flash("Creating....")
         user = User.query.get(current_user.id)
 
         profile = Profile.query.filter_by(user_id=user.id).first()
@@ -148,7 +155,7 @@ def create_view():
         job.job_time = form.job_time.data
         
         keys = list(form.job_address.data)
-        address = " "
+        address = ", "
         values =[]
         for key in keys:
             value = form.job_address.data.get(key)
@@ -162,7 +169,7 @@ def create_view():
         print(job_type.jobs)
         db.session.commit()
 
-        flash("Your request is received!")
+        flash("Your request is received!", category="success")
         return redirect(url_for("jobs.job_view", id=job.id))
     return render_template("create_job.html", form=form)
 
@@ -173,33 +180,99 @@ def job_view(id):
     user = User.query.get(user_id)
 
     if not user:
-        flash("Invalid user")
+        flash("Invalid user", category="warnings")
         return redirect(url_for("auth.login_view"))   
     
     profile = Profile.query.filter_by(user_id=user.id).first()
     job = Job.query.filter_by(id=id, profile_id=profile.id).first()
 
     if not job:
-        flash("Unauthorised to access the job information")
+        flash("Unauthorised to access the job information", category="info")
         return redirect(url_for("jobs.index_view"))
 
     return render_template("job_page.html", job=job)
 
-# @jobs.route("/job-view/<int:id>", methods=["GET"])
-# @login_required
-# def delete_view(id):
-#     user_id = current_user.id
-#     user = User.query.get(user_id)
+@jobs.route("/update-view/<int:id>", methods=["GET","POST"])
+@login_required
+def update_view(id):
+    user_id = current_user.id
+    user = User.query.get(user_id)
 
-#     if not user:
-#         flash("Invalid user")
-#         return redirect(url_for("auth.login_view"))   
+    if not user:
+        flash("Invalid user")
+        return redirect(url_for("auth.login_view"))   
     
-#     profile = Profile.query.filter_by(user_id=user.id).first()
-#     job = Job.query.filter_by(id=id, profile_id=profile.id).first()
+    profile = Profile.query.filter_by(user_id=user.id).first()
+    job = Job.query.filter_by(id=id, profile_id=profile.id)
 
-#     if not job:
-#         flash("Unauthorised to access the job information")
-#         return redirect(url_for("jobs.index_view"))
+    if job.count() != 1:
+        flash("Unauthoried to update this job details", category="info")
+        return redirect(url_for("jobs.index_view"))
+    job_detail = job.first()
+    # Prefill the form with the existing data
+    form = JobForm(obj=job_detail)
+    job_address = job_detail.job_address.split(", ")
+    form.job_address.street_name.data = job_address[0]
+    form.job_address.suburb.data = job_address[1]
+    form.job_address.state.data = job_address[2]
+    form.job_address.postcode.data = job_address[3]
 
-#     return render_template("job_page.html", job=job)
+    if form.validate_on_submit():
+        # Getting new value
+        job_type = JobType.query.filter_by(id=form.job_requested.data).first()
+
+        keys = list(form.job_address.data)
+        address = ", "
+        values =[]
+        for key in keys:
+            value = form.job_address.data.get(key)
+            values.append(str(value))
+
+        job_fields = {
+            "cust_name":form.cust_name.data,
+            "contact_num":form.contact_num.data,
+            "job_requested":job_type.name,
+            "job_date":form.job_date.data,
+            "job_time":form.job_time.data,
+            "job_address":address.join(values),
+            "job_notes":form.notes.data,
+            "job_status":"Pending",
+            "profile_id":profile.id,
+            "job_type_id":job_type.id
+        }
+        print(job)
+        job.update(job_fields)
+        print(job)
+        db.session.commit()
+
+        flash("Your data is updated!", category="success")
+        return redirect(url_for("jobs.job_view", id=job_detail.id))
+    return render_template("update_job.html", form=form, job=job_detail)
+
+@jobs.route("/delete-view/<int:id>", methods=["GET","DELETE"])
+@login_required
+def delete_view(id):
+    user_id = current_user.id
+    user = User.query.get(user_id)
+
+    if not user:
+        flash("Invalid user")
+        return redirect(url_for("auth.login_view"))   
+    
+    profile = Profile.query.filter_by(user_id=user.id).first()
+
+    job = Job.query.filter_by(id=id).first()
+    if not job:
+        flash("The job is not existed in the system", category="info")
+        return redirect(url_for("jobs.index_view"))
+
+    job = Job.query.filter_by(id=id, profile_id=profile.id).first()
+    if not job:
+        flash("Unauthorised to delete this job", category="info")
+        return redirect(url_for("jobs.index_view"))
+    else:
+        db.session.delete(job)
+        db.session.commit()
+        flash("Job is deleted", category="danger")
+        return redirect(url_for("jobs.index_view"))
+    return render_template("job_page.html", job=job)
