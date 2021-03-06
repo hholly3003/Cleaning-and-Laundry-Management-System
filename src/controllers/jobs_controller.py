@@ -131,38 +131,39 @@ def index_view():
 @login_required
 def create_view():
     form = JobForm()
-    # print(form)
-    # if form.validate_on_submit():
-    # print(form.cust_name.data)
-    # print(form.contact_num.data)
-    # print(form.job_requested.data)
-    # print(form.job_date.data)
-    # print(form.job_time.data)
-    # print(form.job_address.data)
-    # print(form.notes.data)
     
     if form.validate_on_submit():
         flash("Creating....")
-        profile = Profile.query.get(current_user.id)
+        user = User.query.get(current_user.id)
+
+        profile = Profile.query.filter_by(user_id=user.id).first()
         job_type = JobType.query.filter_by(id=form.job_requested.data).first()
+        print(job_type.jobs)
 
         job = Job()
         job.cust_name = form.cust_name.data
-        print(form.cust_name.data)
         job.contact_num = form.contact_num.data
         job.job_requested = job_type.name
         job.job_date = form.job_date.data
         job.job_time = form.job_time.data
-        job.job_address = form.job_address.data
+        
+        keys = list(form.job_address.data)
+        address = " "
+        values =[]
+        for key in keys:
+            value = form.job_address.data.get(key)
+            values.append(str(value))
+        job.job_address = address.join(values)
+
         job.job_notes = form.notes.data
         job.job_status = "Pending"
         profile.jobs.append(job)
         job_type.jobs.append(job)
-        print(job)
+        print(job_type.jobs)
         db.session.commit()
 
         flash("Your request is received!")
-        return redirect(url_for("profiles.profile_view", id=profile.id))
+        return redirect(url_for("jobs.job_view", id=job.id))
     return render_template("create_job.html", form=form)
 
 @jobs.route("/job-view/<int:id>", methods=["GET"])

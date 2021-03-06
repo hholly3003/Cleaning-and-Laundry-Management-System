@@ -98,13 +98,13 @@ class AddressForm(FlaskForm):
     state = SelectField(
         "State",
         choices=[
-            (1, "ACT"),
-            (2, "NSW"),
-            (3, "VIC"),
-            (4, "QLD"),
-            (5, "SA"),
-            (6, "TAS"),
-            (7, "WA")
+            ("ACT", "ACT"),
+            ("NSW", "NSW"),
+            ("VIC", "VIC"),
+            ("QLD", "QLD"),
+            ("SA", "SA"),
+            ("TAS", "TAS"),
+            ("WA", "WA")
         ],
         validators=[DataRequired()]
     )
