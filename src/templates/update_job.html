@@ -4,7 +4,7 @@
   <div class="form-wrapper">
 
     <h1>Update Details</h1>
-    <form method="POST" action="{{url_for('jobs.update_view', id=job.id)}}">
+    <form method="POST" action="{{url_for('jobs.update_view', id=job.id, status="Pending")}}">
       {{ form.csrf_token }}
       <div class="form-group">
         <label for="cust_name">Customer Name</label>
@@ -13,7 +13,7 @@
       
       <div class="form-group">
         <label for="contact_num">Contact Number</label>
-        {{form.contact_num(class_="form-control", type="tel", placeholder="04-1111 1111")}}
+        {{form.contact_num(class_="form-control", type="tel", placeholder="04-1234 5678")}}
       </div>
 
       <div class="form-group">

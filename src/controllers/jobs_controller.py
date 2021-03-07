@@ -125,14 +125,21 @@ def job_delete(id):
 @jobs.route("/job-view", methods=["GET","POST"])
 @login_required
 def index_view():
-    # user_id = current_user.id
-    # user = User.query.get(id)
+    user = User.query.get(current_user.id)
+    profile = Profile.query.filter_by(user_id=user.id).first()
+    jobs = Job.query.filter_by(profile_id=profile.id)
 
-    # profile = Profile.query.filter_by(user_id=user.id).first()
+    return render_template("index_job.html", jobs=jobs)
 
-    jobs = Job.query.options(joinedload("profiles")).all()
-
-    # profile_jobs = Job.query.filter_by(profile_id=profile.id).first()
+@jobs.route("/job-view/admin", methods=["GET","POST"])
+@login_required
+def admin_view():
+    user = User.query.get(current_user.id)
+    if user.is_admin == True:
+        jobs = Job.query.options(joinedload("profiles")).all()
+    else:
+        flash("You need an admin access", category="info")
+        return redirect(url_for("jobs.index_view"))
     return render_template("index_job.html", jobs=jobs)
 
 @jobs.route("/create-view", methods=["GET","POST"])
@@ -184,17 +191,21 @@ def job_view(id):
         return redirect(url_for("auth.login_view"))   
     
     profile = Profile.query.filter_by(user_id=user.id).first()
-    job = Job.query.filter_by(id=id, profile_id=profile.id).first()
+
+    if user.is_admin == True:
+        job = Job.query.filter_by(id=id).first()
+    else:
+        job = Job.query.filter_by(id=id, profile_id=profile.id).first()
 
     if not job:
         flash("Unauthorised to access the job information", category="info")
         return redirect(url_for("jobs.index_view"))
 
-    return render_template("job_page.html", job=job)
+    return render_template("job_page.html", job=job, profile=profile)
 
-@jobs.route("/update-view/<int:id>", methods=["GET","POST"])
+@jobs.route("/update-view/<int:id>/<string:status>", methods=["GET","POST"])
 @login_required
-def update_view(id):
+def update_view(id, status):
     user_id = current_user.id
     user = User.query.get(user_id)
 
@@ -203,12 +214,22 @@ def update_view(id):
         return redirect(url_for("auth.login_view"))   
     
     profile = Profile.query.filter_by(user_id=user.id).first()
-    job = Job.query.filter_by(id=id, profile_id=profile.id)
+
+    if user.is_admin==True or status == "Cancelled":
+        job = Job.query.filter_by(id=id)
+        update_status = {"job_status":status}
+        job.update(update_status)
+        db.session.commit()
+        flash(f"The job is {status}", category="info")
+        return redirect(url_for("jobs.job_view", id=job.first().id))
+    else:
+        job = Job.query.filter_by(id=id, profile_id=profile.id)
 
     if job.count() != 1:
         flash("Unauthoried to update this job details", category="info")
         return redirect(url_for("jobs.index_view"))
     job_detail = job.first()
+
     # Prefill the form with the existing data
     form = JobForm(obj=job_detail)
     job_address = job_detail.job_address.split(", ")
@@ -236,7 +257,7 @@ def update_view(id):
             "job_time":form.job_time.data,
             "job_address":address.join(values),
             "job_notes":form.notes.data,
-            "job_status":"Pending",
+            "job_status":status,
             "profile_id":profile.id,
             "job_type_id":job_type.id
         }
@@ -249,7 +270,8 @@ def update_view(id):
         return redirect(url_for("jobs.job_view", id=job_detail.id))
     return render_template("update_job.html", form=form, job=job_detail)
 
-@jobs.route("/delete-view/<int:id>", methods=["GET","DELETE"])
+#ADMIN ONLY ACCESS
+@jobs.route("/delete-view/<int:id>", methods=["GET","POST"])
 @login_required
 def delete_view(id):
     user_id = current_user.id
@@ -259,18 +281,19 @@ def delete_view(id):
         flash("Invalid user")
         return redirect(url_for("auth.login_view"))   
     
-    profile = Profile.query.filter_by(user_id=user.id).first()
+    if user.is_admin == True:
+        job = job = Job.query.filter_by(id=id).first()
+        if not job:
+            flash("The job is not existed in the system", category="info")
+            return redirect(url_for("jobs.index_view"))
 
-    job = Job.query.filter_by(id=id).first()
-    if not job:
-        flash("The job is not existed in the system", category="info")
-        return redirect(url_for("jobs.index_view"))
-
-    job = Job.query.filter_by(id=id, profile_id=profile.id).first()
-    if not job:
-        flash("Unauthorised to delete this job", category="info")
+        db.session.delete(job)
+        db.session.commit()
+        flash("Job is deleted", category="danger")
         return redirect(url_for("jobs.index_view"))
     else:
+        flash("Unauthorised to cancel this job", category="info")
+        return redirect(url_for("jobs.index_view"))
         db.session.delete(job)
         db.session.commit()
         flash("Job is deleted", category="danger")
