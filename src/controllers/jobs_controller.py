@@ -16,8 +16,14 @@ jobs = Blueprint("jobs", __name__, url_prefix="/jobs")
 @jobs.route("/", methods=["GET"])
 @jwt_required()
 def job_index():
-    jobs = Job.query.options(joinedload("profiles")).all()
-    return jsonify(jobs_schema.dump(jobs))
+    if user.is_admin == True:
+        jobs = Job.query.options(joinedload("profiles")).all()
+        return jsonify(jobs_schema.dump(jobs))
+    else:
+        user = User.query.get(current_user.id)
+        profile = Profile.query.filter_by(user_id=user.id).first()
+        jobs = Job.query.filter_by(profile_id=profile.id)
+        return jsonify(jobs_schema.dump(jobs))
 
 #RELATED USER ONLY
 @jobs.route("/", methods=["POST"])
@@ -67,13 +73,16 @@ def job(id):
     
     profile = Profile.query.filter_by(user_id=user.id).first()
 
-    if profile.jobs == []:
-        return abort(400, description="There is no job(s) in your account")
+    if user.is_admin == False:
+        if profile.jobs == []:
+            return abort(400, description="There is no job(s) in your account")
 
-    job = Job.query.filter_by(id=id, profile_id=profile.id)
+        job = Job.query.filter_by(id=id, profile_id=profile.id)
 
-    if job.count() != 1:
-        return abort(401, description="Unauthorised to access this job information")
+        if job.count() != 1:
+            return abort(401, description="Unauthorised to access this job information")
+    else:
+        job = Job.query.filter_by(id=id)
     return jsonify(job_schema.dump(job[0]))
 
 #RELATED USER ONLY
@@ -87,20 +96,20 @@ def job_update(id):
         return abort(401, description="Invalid User")
     
     profile = Profile.query.filter_by(user_id=user.id).first()
-    
     job_fields = job_schema.load(request.json)
-    print(job_fields)
 
-    job = Job.query.filter_by(id=id, profile_id=profile.id)
-    if job.count() != 1:
-        return abort(401, description="Unauthorised to update this job details")
+    if user.is_admin == True:
+        job = Job.query.filter_by(id=id)
+    else:
+        job = Job.query.filter_by(id=id, profile_id=profile.id)
+        if job.count() != 1:
+            return abort(401, description="Unauthorised to update this job details")
     
     job.update(job_fields)
     db.session.commit()
 
     return jsonify(job_schema.dump(job[0]))
 
-#RELATED USER ONLY
 @jobs.route("/<int:id>", methods=["DELETE"])
 @jwt_required()
 def job_delete(id):
@@ -110,16 +119,12 @@ def job_delete(id):
     if not user:
         return abort(401, description="Invalid user")
 
-    profile = Profile.query.filter_by(user_id=user.id).first()
-    
-    job = Job.query.filter_by(id=id, profile_id=profile.id).first()
-
-    if not job:
-        return abort(401, description="Unathorised to delete this job")
-    
-    db.session.delete(job)
-    db.session.commit()
-
+    if user.is_admin == True:
+        job = Job.query.filter_by(id=id).first()
+        if not job:
+            return abort(404, description="Job is not existed in the system")
+        db.session.delete(job)
+        db.session.commit()
     return jsonify(job_schema.dump(job))
 
 @jobs.route("/job-view", methods=["GET","POST"])
