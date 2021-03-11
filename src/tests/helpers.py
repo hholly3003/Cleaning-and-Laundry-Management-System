@@ -24,6 +24,12 @@ class Helpers(unittest.TestCase):
         cls.app_context.pop()
     
     @classmethod
+    def register(cls, data):
+        response = cls.client.post("/auth/register", json=data)
+        data = response.get_json()
+        return response, data
+    
+    @classmethod
     def login(cls, data):
         response = cls.client.post("/auth/login", json=data)
         data = response.get_json()
