@@ -11,8 +11,14 @@ def get_env(var):
 #Defining configuration for different environments
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = "duck"
-    SECRET_KEY = "Authkey"
+    
+    @property
+    def JWT_SECRET_KEY(self):
+        return get_env("JWT_SECRET_KEY")
+
+    @property
+    def SECRET_KEY(self):
+        return get_env("SECRET_KEY")
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
@@ -28,8 +34,9 @@ class ProductionConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+
     @property
-    def SQLALCHEMY_DATABASE_URI_TEST(self):
+    def SQLALCHEMY_DATABASE_URI(self):
         return get_env("DB_URI_TEST")
 
 environment = os.environ.get("FLASK_ENV")
