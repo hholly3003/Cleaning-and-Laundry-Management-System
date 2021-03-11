@@ -26,7 +26,7 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    return jsonify(user_schema.dump(user))
+    return jsonify(user_schema.dump(user)),201
 
 @auth.route("/login", methods=["POST"])
 def login():
