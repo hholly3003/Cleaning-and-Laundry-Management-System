@@ -105,10 +105,13 @@ def profile_delete(id):
     if not user:
         return abort(401, description="Invalid user")
     
-    profile = Profile.query.filter_by(id=id, user_id=user.id).first()
+    if user.is_admin == True:
+        profile = Profile.query.filter_by(id=id).first()
+    else:
+        profile = Profile.query.filter_by(id=id, user_id=user.id).first()
 
-    if not profile:
-        return abort(401, description="Unathorised to delete this profile")
+        if not profile:
+            return abort(401, description="Unathorised to delete this profile")
     
     db.session.delete(profile)
     db.session.commit()
