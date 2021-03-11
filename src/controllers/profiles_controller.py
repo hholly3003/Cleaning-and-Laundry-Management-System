@@ -65,7 +65,10 @@ def profile(id):
     if user.profile == []:
         return abort(400, description="Profile not found")
     
-    profile = Profile.query.filter_by(id=id, user_id=user.id)
+    if user.is_admin == True:
+        profile = Profile.query.filter_by(id=id)
+    else:
+        profile = Profile.query.filter_by(id=id, user_id=user.id)
 
     if profile.count() != 1:
         return abort(401, description="Unauthorised to access this profile")
@@ -146,14 +149,17 @@ def profile_view(id):
     if not user:
         flash("Invalid user")
         return redirect(url_for("auth.login_view"))
-    print(user.profile)
+    
     if user.profile == []:
         flash("Profile page can not be found")
         return redirect(url_for("profiles.create_view")) 
 
-    correct_profile =  Profile.query.filter_by(user_id=user.id, id=profile.id).first()
-    if not correct_profile:
-        flash("Unauthorised to access the requested profile")
-        return redirect(url_for("profiles.profile_view", id=profile.id))
+    if user.is_admin == True:
+        profile = Profile.query.filter_by(id=id).first()
+    else:
+        correct_profile =  Profile.query.filter_by(user_id=user.id, id=profile.id).first()
+        if not correct_profile:
+            flash("Unauthorised to access the requested profile")
+            return redirect(url_for("profiles.profile_view", id=profile.id))
 
     return render_template("profile_page.html", profile=profile)
