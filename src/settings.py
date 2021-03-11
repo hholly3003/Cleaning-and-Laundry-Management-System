@@ -29,7 +29,7 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     @property
-    def SQLALCHEMY_DATABASE_URI(self):
+    def SQLALCHEMY_DATABASE_URI_TEST(self):
         return get_env("DB_URI_TEST")
 
 environment = os.environ.get("FLASK_ENV")
