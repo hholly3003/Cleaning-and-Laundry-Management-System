@@ -12,20 +12,19 @@ from sqlalchemy.orm import joinedload
 
 jobs = Blueprint("jobs", __name__, url_prefix="/jobs")
 
-#ADMIN ONLY
 @jobs.route("/", methods=["GET"])
 @jwt_required()
 def job_index():
+    user_id = get_jwt_identity()
+    user =  User.query.get(user_id)
+    
     if user.is_admin == True:
         jobs = Job.query.options(joinedload("profiles")).all()
-        return jsonify(jobs_schema.dump(jobs))
     else:
-        user = User.query.get(current_user.id)
         profile = Profile.query.filter_by(user_id=user.id).first()
         jobs = Job.query.filter_by(profile_id=profile.id)
-        return jsonify(jobs_schema.dump(jobs))
+    return jsonify(jobs_schema.dump(jobs))
 
-#RELATED USER ONLY
 @jobs.route("/", methods=["POST"])
 @jwt_required()
 def job_create():
@@ -36,14 +35,13 @@ def job_create():
         return abort(401, description="Invalid user")
     
     profile = Profile.query.filter_by(user_id=user.id).first()
-    print(profile.__dict__)
 
     job_fields = job_schema.load(request.json)
 
     job_type = JobType.query.filter_by(name=job_fields["job_requested"]).first()
 
     if not job_type:
-        return abort(400, description="Sorry, we do not have that service")
+        return abort(404, description="Sorry, we do not have that service")
 
     new_job = Job()
     new_job.cust_name = job_fields["cust_name"]
@@ -59,9 +57,8 @@ def job_create():
     
     db.session.commit()
     
-    return jsonify(job_schema.dump(new_job))
+    return jsonify(job_schema.dump(new_job)), 201
 
-#ADMIN AND RELATED USER ONLY
 @jobs.route("/<int:id>", methods=["GET"])
 @jwt_required()
 def job(id):
@@ -125,6 +122,8 @@ def job_delete(id):
             return abort(404, description="Job is not existed in the system")
         db.session.delete(job)
         db.session.commit()
+    else:
+        return abort(401, description="Unauthorised user")
     return jsonify(job_schema.dump(job))
 
 @jobs.route("/job-view", methods=["GET","POST"])

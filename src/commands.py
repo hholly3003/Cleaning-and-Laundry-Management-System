@@ -32,6 +32,7 @@ def seed_db():
     job_types = []
     jobs = []
 
+    #Create 5 users
     for i in range(5):
         user = User()
         user.email = f"test{i+1}@test.com"
@@ -40,16 +41,34 @@ def seed_db():
         users.append(user)
     
     db.session.commit()
-
+    print(users)
+    #Create profile for the 5 users
     for i in range(5):
         profile = Profile()
         profile.username = users[i].email
         profile.firstname = faker.first_name()
         profile.lastname = faker.last_name()
-        profile.user_id = random.choice(users).id
+        profile.user_id = users[i].id
         db.session.add(profile)
         profiles.append(profile)
     
+    db.session.commit()
+
+    #Create admin user
+    user = User()
+    user.email = "admin@test.com"
+    user.password = bcrypt.generate_password_hash("123456").decode("utf-8")
+    user.is_admin = True
+    db.session.add(user)
+    db.session.commit()
+
+    #Create admin profile
+    profile = Profile()
+    profile.username = "admin@test.com"
+    profile.firstname = "admin"
+    profile.lastname = "admin"
+    profile.user_id = user.id
+    db.session.add(profile)  
     db.session.commit()
 
     for i in range(2):
@@ -62,7 +81,7 @@ def seed_db():
     
     db.session.commit()
 
-    for i in range(4):
+    for i in range(5):
         job = Job()
         job_type = random.choice(job_types)
         job.cust_name = faker.name()
@@ -73,7 +92,7 @@ def seed_db():
         job.job_address = faker.address()
         job.job_status = "Pending"
         job.notes = ""
-        job.profile_id = random.choice(profiles).id
+        job.profile_id = profiles[i].id
         job.job_type_id = job_type.id
         db.session.add(job)
         jobs.append(job)
