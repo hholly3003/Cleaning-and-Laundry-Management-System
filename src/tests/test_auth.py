@@ -1,5 +1,4 @@
 from models.User import User
-from schemas.UserSchema import users_schema
 from helpers import Helpers
 
 class TestAuth(Helpers):
@@ -9,7 +8,7 @@ class TestAuth(Helpers):
             "email" : "example@test.com",
             "password" : "112233"
         }
-
+        
         response, data = self.post_request(endpoint, body=data)
         self.assertEqual(response.status_code,201)
         self.assertEqual(data["id"], 7)
