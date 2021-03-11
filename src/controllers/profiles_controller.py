@@ -14,7 +14,13 @@ profiles = Blueprint("profiles", __name__, url_prefix="/profiles")
 @profiles.route("/", methods=["GET"])
 @jwt_required()
 def profile_index():
-    profiles = Profile.query.options(joinedload("user")).all()
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if user.is_admin == True:
+        profiles = Profile.query.options(joinedload("user")).all()
+    else:
+        return abort(403, description="Unauthorised to access")
     return jsonify(profiles_schema.dump(profiles))
 
 #RELATED USER ONLY
@@ -37,7 +43,7 @@ def profile_create():
         return abort(400, description="username is taken")
     
     new_profile = Profile()
-    new_profile.username = profile_fields["username"]
+    new_profile.username = user.email
     new_profile.firstname = profile_fields["firstname"]
     new_profile.lastname = profile_fields["lastname"]
 
