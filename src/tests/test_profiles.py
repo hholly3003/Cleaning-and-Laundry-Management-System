@@ -166,17 +166,16 @@ class TestProfiles(Helpers):
         response, data = self.patch_request(endpoint, headers=headers_data, body=data)
         self.assertEqual(response.status_code, 401)
         self.assertIsNone(data)
-    
-    # def test_profile_delete_admin(self):
-    #     admin_login = {
-    #         "email": "admin@test.com",
-    #         "password": "123456"
-    #     }
-    #     profile = Profile.query.get(1)
-    #     endpoint =f"/profiles/{profile.id}"
-    #     headers_data = self.login(admin_login)
+    def test_profile_delete_admin(self):
+        admin_login = {
+            "email": "admin@test.com",
+            "password": "123456"
+        }
+        profile = Profile.query.get(1)
+        endpoint =f"/profiles/{profile.id}"
+        headers_data = self.login(admin_login)
 
-    #     response, data = self.delete_request(endpoint, headers=headers_data)
-    #     self.assertEqual(response.status_code, 200)
-        # self.assertIsNotNone(data)
-        # self.assertIsInstance(data, dict)
+        response, data = self.delete_request(endpoint, headers=headers_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(data)
+        self.assertIsInstance(data, dict)

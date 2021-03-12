@@ -175,19 +175,17 @@ class TestJobs(Helpers):
         self.assertEqual(response.status_code, 401)
         self.assertIsNone(data)
     
-    # def test_job_delete(self):
-    #     admin_login ={
-    #         "email": "admin@test.com",
-    #         "password": "123456"
-    #     }
-    #     job = Job.query.first()
-    #     endpoint = f"/jobs/{job.id}"
-    #     headers_data = self.login(admin_login)
+    def test_job_delete(self):
+        admin_login ={
+            "email": "admin@test.com",
+            "password": "123456"
+        }
+        job = Job.query.first()
+        endpoint = f"/jobs/{job.id}"
+        headers_data = self.login(admin_login)
 
-    #     response, data = self.delete_request(endpoint, headers=headers_data)
-    #     self.assertEqual(response.status_code, 200)
-    #     # self.assertIsNotNone(data)
-    #     # self.assertIsInstance(data, dict)
+        response, data = self.delete_request(endpoint, headers=headers_data)
+        self.assertEqual(response.status_code, 200)
     
     def test_job_delete_invalid(self):
         admin_login ={
