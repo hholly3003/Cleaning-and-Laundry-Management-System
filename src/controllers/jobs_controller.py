@@ -82,7 +82,6 @@ def job(id):
         job = Job.query.filter_by(id=id)
     return jsonify(job_schema.dump(job[0]))
 
-#RELATED USER ONLY
 @jobs.route("/<int:id>", methods=["PUT","PATCH"])
 @jwt_required()
 def job_update(id):
@@ -126,6 +125,7 @@ def job_delete(id):
         return abort(401, description="Unauthorised user")
     return jsonify(job_schema.dump(job))
 
+#get all the job by the logged in user and render index_job.html
 @jobs.route("/job-view", methods=["GET","POST"])
 @login_required
 def index_view():
@@ -135,6 +135,7 @@ def index_view():
 
     return render_template("index_job.html", jobs=jobs)
 
+#get all the job created in the system and render index_job.html
 @jobs.route("/job-view/admin", methods=["GET","POST"])
 @login_required
 def admin_view():
@@ -146,6 +147,7 @@ def admin_view():
         return redirect(url_for("jobs.index_view"))
     return render_template("index_job.html", jobs=jobs)
 
+#create new job
 @jobs.route("/create-view", methods=["GET","POST"])
 @login_required
 def create_view():
@@ -184,6 +186,8 @@ def create_view():
         return redirect(url_for("jobs.job_view", id=job.id))
     return render_template("create_job.html", form=form)
 
+#Admin user able to check any job details in the system
+#Customer user only able to access the job they created
 @jobs.route("/job-view/<int:id>", methods=["GET"])
 @login_required
 def job_view(id):
@@ -209,6 +213,8 @@ def job_view(id):
 
     return render_template("job_page.html", job=job, profile=profile)
 
+#Admin only able to update job status
+#Customer able to update the details of their job request
 @jobs.route("/update-view/<int:id>/<string:status>", methods=["GET","POST"])
 @login_required
 def update_view(id, status):
@@ -276,7 +282,7 @@ def update_view(id, status):
         return redirect(url_for("jobs.job_view", id=job_detail.id))
     return render_template("update_job.html", form=form, job=job_detail)
 
-#ADMIN ONLY ACCESS
+#Only admin allowed to delete the job from the system
 @jobs.route("/delete-view/<int:id>", methods=["GET","POST"])
 @login_required
 def delete_view(id):

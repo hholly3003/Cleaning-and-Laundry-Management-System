@@ -40,7 +40,7 @@ def login():
     else:
         return abort(401, description="Unauthorized")
 
-# ADMIN ONLY
+# get all the user
 @auth.route("/users", methods=["GET"])
 def user_index():
     user = User.query.all()
@@ -113,6 +113,7 @@ def login_view():
         return redirect(url_for("auth.login_view"))
     return render_template("login.html", form=form)
 
+#logged the authenticated user out from the system
 @auth.route("/logout", methods=["GET","POST"])
 @login_required
 def logout():

@@ -19,7 +19,6 @@ def seed_db():
     from models.JobType import JobType
     from main import bcrypt
     from faker import Faker
-    import random, datetime
 
     faker = Faker()
     users = []
