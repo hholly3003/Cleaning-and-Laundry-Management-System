@@ -3,11 +3,7 @@ from flask import Blueprint
 
 db_commands = Blueprint("db-custom", __name__)
 
-@db_commands.cli.command("create")
-def create_db():
-    db.create_all()
-    print("Tables created")
-
+#Dropping all table
 @db_commands.cli.command("drop")
 def drop_db():
     db.drop_all()
@@ -15,12 +11,12 @@ def drop_db():
     db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
     print("Tables deleted")
 
+#Seeding sample data to the database table
 @db_commands.cli.command("seed")
 def seed_db():
     from models.User import User
     from models.Profile import Profile
     from models.JobType import JobType
-    from models.Job import Job
     from main import bcrypt
     from faker import Faker
     import random, datetime
@@ -41,7 +37,7 @@ def seed_db():
         users.append(user)
     
     db.session.commit()
-    print(users)
+    
     #Create profile for the 5 users
     for i in range(5):
         profile = Profile()
@@ -81,20 +77,4 @@ def seed_db():
     
     db.session.commit()
 
-    for i in range(5):
-        job = Job()
-        job_type = random.choice(job_types)
-        job.cust_name = faker.name()
-        job.contact_num = faker.phone_number()
-        job.job_requested = job_type.name
-        job.job_date = faker.future_date()
-        job.job_time = faker.time_object()
-        job.job_address = f"{faker.street_name()}, {faker.city()}, {faker.country()}, {faker.postcode()}"
-        job.job_status = "Pending"
-        job.notes = ""
-        job.profile_id = profiles[i].id
-        job.job_type_id = job_type.id
-        db.session.add(job)
-        jobs.append(job)
-
-    db.session.commit()
+    print("Tables seeded")
