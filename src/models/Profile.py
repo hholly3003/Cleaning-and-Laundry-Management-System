@@ -9,7 +9,7 @@ class Profile(db.Model):
     firstname = db.Column(db.String(), nullable=False)
     lastname = db.Column(db.String(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    jobs = db.relationship("Job", backref=db.backref("profiles", lazy="joined"))
+    jobs = db.relationship("Job", backref=db.backref("profiles", lazy="joined"), cascade="all, delete")
 
     def __repr__(self):
         return f"Profile: {self.firstname} {self.lastname}"
