@@ -32,7 +32,7 @@
           <!-- Navbar Right Side -->
             <div class="navbar-nav ">
               {% if current_user.is_admin == True %}
-              <a href="{{url_for('jobs.index_view')}}" class="nav-item nav-link">Request History</a>
+              <a href="{{url_for('jobs.admin_view')}}" class="nav-item nav-link">Request History</a>
               {%else%}
               <a href="{{url_for('jobs.index_view')}}" class="nav-item nav-link">Request History</a>
               {% endif %}
