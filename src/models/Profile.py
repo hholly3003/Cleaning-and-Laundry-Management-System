@@ -12,4 +12,4 @@ class Profile(db.Model):
     jobs = db.relationship("Job", backref=db.backref("profiles", lazy="joined"), cascade="all, delete")
 
     def __repr__(self):
-        return f"Profile: {self.firstname} {self.lastname}"
+        return f"{self.firstname} {self.lastname}"

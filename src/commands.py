@@ -89,7 +89,7 @@ def seed_db():
         job.job_requested = job_type.name
         job.job_date = faker.future_date()
         job.job_time = faker.time_object()
-        job.job_address = faker.address()
+        job.job_address = f"{faker.street_name()}, {faker.city()}, {faker.country()}, {faker.postcode()}"
         job.job_status = "Pending"
         job.notes = ""
         job.profile_id = profiles[i].id

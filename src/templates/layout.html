@@ -34,6 +34,7 @@
               {% if current_user.is_admin == True %}
               <a href="{{url_for('jobs.admin_view')}}" class="nav-item nav-link">Requests</a>
               {%else%}
+              <a href="{{url_for('jobs.create_view')}}" class="nav-item nav-link">New Requests</a>
               <a href="{{url_for('jobs.index_view')}}" class="nav-item nav-link">My Requests</a>
               {% endif %}
               <a href="{{url_for('profiles.profile_view',id=current_user.id)}}" class="nav-item nav-link">My Profile</a>
