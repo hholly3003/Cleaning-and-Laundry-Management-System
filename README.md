@@ -46,7 +46,7 @@ The application is deployed to AWS by using EC2 instances to run the app and pos
 Testcases are created and available in the source code under folder tests
 
 #### R7, R11 & R12: LINKS
-[PROJECT LINK](http://13.211.33.203:5000/auth/login-view)
+[PROJECT LINK](http://cleaningandlaundry.ml:5000/auth/login-view)
 [GITHUB LINK](https://github.com/hholly3003/Cleaning-and-Laundry-Management-System)
 
 ---

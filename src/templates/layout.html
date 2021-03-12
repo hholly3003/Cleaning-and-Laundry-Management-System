@@ -43,8 +43,8 @@
           {% else %}
             <div class="navbar-nav mr-auto"></div>
             <div class="navbar-nav">
-              <a href="#" class="nav-item nav-link">Login</a>
-              <a href="#" class="nav-item nav-link">Register</a>           
+              <a href="{{url_for('auth.login_view')}}" class="nav-item nav-link">Login</a>
+              <a href="{{url_for('auth.register_view')}}" class="nav-item nav-link">Register</a>           
             </div>
           {% endif %} 
         </div>    
