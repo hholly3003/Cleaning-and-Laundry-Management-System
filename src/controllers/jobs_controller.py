@@ -195,11 +195,13 @@ def job_view(id):
         return redirect(url_for("auth.login_view"))   
     
     profile = Profile.query.filter_by(user_id=user.id).first()
-
+    print(profile.jobs)
     if user.is_admin == True:
         job = Job.query.filter_by(id=id).first()
+        print(job.id, job.cust_name)
     else:
         job = Job.query.filter_by(id=id, profile_id=profile.id).first()
+        print(job.id, job.cust_name)
 
     if not job:
         flash("Unauthorised to access the job information", category="info")

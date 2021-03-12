@@ -116,7 +116,8 @@ def profile_delete(id):
     db.session.delete(profile)
     db.session.commit()
 
-    return jsonify(profile_schema.dump(profile))
+    return "deleted the profile"
+    # return jsonify(profile_schema.dump(profile))
 
 @profiles.route("/create-view", methods=["GET","POST"])
 @login_required
